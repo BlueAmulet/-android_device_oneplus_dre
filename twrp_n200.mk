@@ -23,16 +23,16 @@ $(call inherit-product-if-exists, $(SRC_TARGET_DIR)/product/full_base_telephony.
 $(call inherit-product-if-exists, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
 # Inherit from denver device
-$(call inherit-product, device/motorola/denver/device.mk)
+$(call inherit-product, device/oneplus/n200/device.mk)
 
 # Inherit some common Omni stuff.
 # $(call inherit-product, vendor/omni/config/common.mk)
 # $(call inherit-product, vendor/omni/config/gsm.mk)
 
 # Device identifier. This must come after all inclusions
-PRODUCT_DEVICE := denver
-PRODUCT_NAME := twrp_denver
-PRODUCT_BRAND := motorola
-PRODUCT_MODEL := motorola
-PRODUCT_MANUFACTURER := motorola
-PRODUCT_RELEASE_NAME := motorola motorola
+PRODUCT_DEVICE := n200
+PRODUCT_NAME := twrp_n200
+PRODUCT_BRAND := oneplus
+PRODUCT_MODEL := oneplus
+PRODUCT_MANUFACTURER := oneplus
+PRODUCT_RELEASE_NAME := oneplus oneplus

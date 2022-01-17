@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-DEVICE_PATH := device/motorola/denver
+DEVICE_PATH := device/oneplus/n200
 
 # For building with minimal manifest
 ALLOW_MISSING_DEPENDENCIES := true
@@ -37,18 +37,17 @@ TARGET_BOARD_SUFFIX := _64
 TARGET_USES_64_BIT_BINDER := true
 
 # Assert
-TARGET_OTA_ASSERT_DEVICE := denver
+TARGET_OTA_ASSERT_DEVICE := OnePlusN200,OnePlusN200TMO,OnePlusN200MPCS
 
 # File systems
 BOARD_HAS_LARGE_FILESYSTEM := true
-BOARD_BOOTIMAGE_PARTITION_SIZE := 67108864
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := 67108864
+BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296
 BOARD_DTBOIMG_PARTITION_SIZE := 25165824
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 116995371008
 BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := ext4
 
 BOARD_SYSTEMIMAGE_PARTITION_TYPE := ext4
-BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := ext4
+BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
 BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
@@ -65,24 +64,24 @@ AB_OTA_UPDATER := true
 TW_INCLUDE_REPACKTOOLS := true
 
 # Kernel
-BOARD_KERNEL_CMDLINE := console=ttyMSM0,115200n8 earlycon=msm_geni_serial,0x04C8C000 androidboot.hardware=qcom androidboot.console=ttyMSM0 androidboot.memcg=1 lpm_levels.sleep_disabled=1 video=vfb:640x400,bpp=32,memsize=3072000 msm_rtb.filter=0x237 service_locator.enable=1 androidboot.usbcontroller=4e00000.dwc3 swiotlb=0 loop.max_part=7 cgroup.memory=nokmem,nosocket iptable_raw.raw_before_defrag=1 ip6table_raw.raw_before_defrag=1 firmware_class.path=/vendor/firmware_mnt/image androidboot.hab.csv=5 androidboot.hab.product=denver androidboot.hab.cid=50 buildvariant=user
+BOARD_KERNEL_CMDLINE := console=ttyMSM0,115200n8 earlycon=msm_geni_serial,0x04C8C000 androidboot.hardware=qcom androidboot.console=ttyMSM0 androidboot.memcg=1 lpm_levels.sleep_disabled=1 video=vfb:640x400,bpp=32,memsize=3072000 msm_rtb.filter=0x237 service_locator.enable=1 androidboot.usbcontroller=4e00000.dwc3 swiotlb=0 loop.max_part=7 cgroup.memory=nokmem,nosocket iptable_raw.raw_before_defrag=1 ip6table_raw.raw_before_defrag=1 firmware_class.path=/vendor/firmware_mnt/image buildvariant=user
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/Image.gz-dtb
 BOARD_BOOTIMG_HEADER_VERSION := 3
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOTIMG_HEADER_VERSION)
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_HEADER_ARCH := arm64
-TARGET_KERNEL_SOURCE := kernel/motorola/denver
-TARGET_KERNEL_CONFIG := denver_defconfig
+TARGET_KERNEL_SOURCE := kernel/oneplus/sm4350
+TARGET_KERNEL_CONFIG := vendor/dre-stock_defconfig
 
 NEED_KERNEL_MODULE_RECOVERY := true
 
-BOARD_FLASH_BLOCK_SIZE := 131072
-BOARD_BOOTIMAGE_PARTITION_SIZE := 201326592
+BOARD_FLASH_BLOCK_SIZE := 4096
+BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296
 BOARD_VENDOR_BOOTIMAGE_PARTITION_SIZE := 100663296
 
 BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions
-BOARD_SUPER_PARTITION_SIZE := 9126805504
+BOARD_SUPER_PARTITION_SIZE := 6442450944
 BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := odm product system system_ext vendor
 
 # Metadata

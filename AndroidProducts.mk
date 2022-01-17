@@ -17,4 +17,9 @@
 #
 
 PRODUCT_MAKEFILES := \
-     $(LOCAL_DIR)/twrp_denver.mk
+     $(LOCAL_DIR)/twrp_n200.mk
+
+     COMMON_LUNCH_CHOICES := \
+    twrp_n200-user \
+    twrp_n200-userdebug \
+    twrp_n200-eng

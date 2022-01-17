@@ -9,8 +9,9 @@
 /vendor_image       emmc      vendor                                                                flags=display="Vendor image";backup=1;flashimg=1;logical;
 /odm                ext4      odm                                                                   flags=display="Odm";backup=1;logical;
 /odm_image          emmc      odm                                                                   flags=display="Odm image";backup=1;flashimg=1;logical;
+/op2                ext4      /dev/block/bootdevice/by-name/opluslog                                flags=display="OP2";backup=1;
 /metadata           ext4      /dev/block/bootdevice/by-name/metadata                                flags=display="Metadata";
 /data               f2fs      /dev/block/bootdevice/by-name/userdata                                flags=display="Data";
-/sdcard1            vfat      /dev/block/mmcblk1p1                                                  flags=display="Sdcard1";
+/sdcard1            auto      /dev/block/mmcblk1p1                                                  flags=display="Sdcard1";
 /boot               emmc      /dev/block/bootdevice/by-name/boot                                    flags=display="Boot";backup=1;flashimg=1;
 /misc               emmc      /dev/block/bootdevice/by-name/misc                                    flags=display="Misc";backup=1;flashimg=1;

@@ -16,5 +16,5 @@
 # limitations under the License.
 #
 
-add_lunch_combo twrp_denver-userdebug
-add_lunch_combo twrp_denver-eng
+add_lunch_combo twrp_n200-userdebug
+add_lunch_combo twrp_n200-eng
