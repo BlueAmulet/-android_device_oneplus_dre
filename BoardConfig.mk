@@ -56,7 +56,7 @@ TARGET_ENFORCE_AB_OTA_PARTITION_LIST := true
 BOARD_USES_RECOVERY_AS_BOOT := true
 
 BOARD_BUILD_SYSTEM_ROOT_IMAGE := false
-TARGET_NO_RECOVERY := false
+TARGET_NO_RECOVERY := true
 #BOARD_INCLUDE_RECOVERY_DTBO = true
 
 # A/B
@@ -84,10 +84,12 @@ BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions
 BOARD_SUPER_PARTITION_SIZE := 6442450944
 BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := odm product system system_ext vendor
 
-# Metadata
+# Crypto
 BOARD_USES_METADATA_PARTITION := true
 BOARD_USES_QCOM_FBE_DECRYPTION := true
-
+TW_INCLUDE_CRYPTO := true
+TW_INCLUDE_CRYPTO_FBE := true
+TW_INCLUDE_FBE_METADATA_DECRYPT := true
 
 # Platform
 TARGET_BOARD_PLATFORM := holi
@@ -98,9 +100,11 @@ RECOVERY_VARIANT := twrp
 #PRODUCT_BUILD_RECOVERY_IMAGE := true
 
 # Hack: prevent anti rollback
-PLATFORM_SECURITY_PATCH := 2021-10-31
-VENDOR_SECURITY_PATCH := 2021-10-31
+PLATFORM_SECURITY_PATCH := 2099-12-31
+VENDOR_SECURITY_PATCH := 2099-12-31
 PLATFORM_VERSION := 16.1.0
+
+TARGET_RECOVERY_DEVICE_MODULES += libion libandroidicu vendor.display.config@1.0 vendor.display.config@2.0 libdisplayconfig.qti device_manifest.xml system_manifest.xml
 
 # TWRP Configuration
 TW_THEME := portrait_hdpi
