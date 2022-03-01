@@ -27,6 +27,8 @@ $(call inherit-product, device/oneplus/n200/device.mk)
 # Inherit some common TWRP stuff.
 $(call inherit-product, vendor/twrp/config/common.mk)
 
+# COMMON_SOC := sm4350
+# PRODUCT_PLATFORM := holi
 # Device identifier. This must come after all inclusions
 PRODUCT_DEVICE := n200
 PRODUCT_NAME := twrp_n200

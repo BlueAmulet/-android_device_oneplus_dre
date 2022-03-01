@@ -1,0 +1,14 @@
+# for battery charging off is call_state_change
+#jinguozhi@wt.network,20210207,add for battery charging off is call_state_change
+persist.sys.chgdisabled=0
+
+#property to enable HWC for VDS
+debug.sf.enable_hwc_vds=1
+
+#property to latch unsignaled buffer
+debug.sf.latch_unsignaled=1
+
+#initialize QCA1530 detection
+sys.qca1530=detect
+
+ro.charger.enable_suspend=1

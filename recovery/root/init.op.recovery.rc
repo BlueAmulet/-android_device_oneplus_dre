@@ -1,0 +1,287 @@
+on early-init
+ # Change ownership of hw_recovery related nodes
+    chown system graphics /sys/kernel/debug/dri/0/debug/dump
+    chown system graphics /sys/kernel/debug/dri/0/debug/recovery_reg
+    chown system graphics /sys/kernel/debug/dri/0/debug/recovery_dbgbus
+    chown system graphics /sys/kernel/debug/dri/0/debug/recovery_vbif_dbgbus
+    chown system graphics /sys/kernel/debug/dri/0/debug/recovery_dsi_dbgbus
+
+  # Change ownership of sysfs power control node
+    chown system graphics /sys/class/drm/card0/device/power/control
+
+    # Change ownership of sw_sync node
+    chown system graphics /sys/kernel/debug/sync/sw_sync
+    chmod 0666 /sys/kernel/debug/sync/sw_sync
+on init
+    mkdir /mnt
+    mkdir /mnt/vendor/modemdump
+    mkdir /mnt/vendor/op2
+    mkdir /mnt/vendor/persist
+
+    # Mount binderfs
+    mkdir /dev/binderfs
+    mount binder binder /dev/binderfs stats=global
+    chmod 0755 /dev/binderfs
+
+    symlink /dev/binderfs/binder /dev/binder
+    symlink /dev/binderfs/hwbinder /dev/hwbinder
+    symlink /dev/binderfs/vndbinder /dev/vndbinder
+
+    chmod 0666 /dev/binderfs/hwbinder
+    chmod 0666 /dev/binderfs/binder
+    chmod 0666 /dev/binderfs/vndbinder
+
+on fs
+    write /dev/event-log-tags "# content owned by logd"
+    chown system system /sys/class/power_supply/battery/is_aging_test
+    chown system system /sys/class/power_supply/battery/dump_reg
+    #add for tp debug log & to set node gesture_enable
+    chown system system /proc/touchpanel/tp_debug_log
+    chown system system /proc/touchpanel/gesture_enable
+    chown system system /proc/touchpanel/gesture_switch
+    chown system system /proc/touchpanel/tpedge_limit_enable
+    chown system system /proc/touchpanel/tp_switch_dead_zone
+    chown system system /proc/touchpanel/tp_switch_corner_dead_l_zone
+    chown system system /proc/touchpanel/tp_switch_corner_dead_p_zone
+    chown system system /proc/touchpanel/touch_apk
+    chown system system /proc/touchpanel/get_device_temperature
+    chown system system /proc/touchpanel/get_ic_firmware_version
+    #add for tp firmware update
+    write /sys/devices/platform/soc/a94000.i2c/i2c-4/4-004b/tp_fw_update 0
+    write /sys/devices/platform/soc/a94000.i2c/i2c-4/4-0048/tp_fw_update 0
+    write /sys/devices/platform/soc/984000.i2c/i2c-4/4-005d/tp_fw_update 0
+    write /sys/devices/platform/soc/984000.i2c/i2c-4/4-0048/tp_fw_update 0
+    write /sys/devices/platform/soc/a94000.i2c/i2c-4/4-005d/tp_fw_update 0
+    write /sys/devices/platform/soc/880000.i2c/i2c-0/0-0038/tp_fw_update 0
+    write /sys/devices/platform/soc/880000.spi/spi_master/spi0/spi0.0/tp_fw_update 0
+#add for n200
+    write /sys/devices/platform/soc/4a80000.spi/spi_master/spi0/spi0.0/tp_fw_update 0
+    chown logd logd /dev/event-log-tags
+    chmod 0644 /dev/event-log-tags
+    chown logd logd /system/bin/logd
+    # Mount firmware
+    mkdir /firmware
+    mkdir /dsp
+    mkdir /bluetooth
+    mount vfat /dev/block/bootdevice/by-name/modem${ro.boot.slot_suffix} /firmware ro
+    mount ext4 /dev/block/bootdevice/by-name/dsp${ro.boot.slot_suffix} /dsp ro
+    mount ext4 /dev/block/bootdevice/by-name/bluetooth${ro.boot.slot_suffix} /bluetooth ro
+    mount ext4 /dev/block/bootdevice/by-name/modemdump /mnt/vendor/modemdump noatime nosuid nodev barrier=1
+    mount ext4 /dev/block/bootdevice/by-name/opluslog /mnt/vendor/op2 noatime nosuid nodev barrier=1
+    mount ext4 /dev/block/bootdevice/by-name/persist /mnt/vendor/persist noatime nosuid nodev barrier=1
+    wait /mnt/vendor/op2
+    chown system system /mnt/vendor/op2
+#endif /* VENDOR_EDIT */
+    chown root system /mnt/vendor/persist
+    chmod 0771 /mnt/vendor/persist
+    restorecon_recursive /mnt/vendor/persist
+    mkdir /mnt/vendor/persist/data 0700 system system
+    mkdir /mnt/vendor/my_cota 0660 system system
+    # create symlink for vendor mount points
+    symlink /firmware /vendor/firmware_mnt
+    symlink /bt_firmware /vendor/bt_firmware
+    symlink /dsp /vendor/dsp
+    symlink /firmware /modem
+    #   Power@bsp, 2020/2/27, add for thermal
+    chown system system /dev/msm_thermal
+    chown system system /dev/skin_thermal
+    chown system system /dev/modem_skin_thermal
+    chown system system /dev/mmw0_thermal
+    chown system system /dev/mmw1_thermal
+    chown system system /dev/mmw2_thermal
+    chmod 0664 /dev/msm_thermal
+    chmod 0664 /dev/skin_thermal
+    chmod 0664 /dev/modem_skin_thermal
+    chmod 0664 /dev/mmw0_thermal
+    chmod 0664 /dev/mmw1_thermal
+    chmod 0664 /dev/mmw2_thermal
+#   ken.lin@ASTI, 2019/6/21, add for fsc
+    chown system system /sys/module/fsc/parameters/enable
+    chmod 0664 /sys/module/fsc/parameters/enable
+
+on fs && property:ro.debuggable=1
+    start logd
+
+on post-fs
+    write /dev/ipa 1
+    mkdir /mnt/vendor/op2/recovery 0770 root system
+    #endif
+    chmod 0664 /sys/module/qpnp_smb5/parameters/usb_connector_temp
+    chown system system /sys/module/qpnp_smb5/parameters/usb_connector_temp
+    chmod 0664 /sys/module/qpnp_smb5/parameters/disable_connector_protect
+    chown system system /sys/module/qpnp_smb5/parameters/disable_connector_protect
+    chmod 0664 /sys/module/qpnp_smb5/parameters/usb_interval_temp
+    chown system system /sys/module/qpnp_smb5/parameters/usb_interval_temp
+    chmod 0664 /sys/module/qpnp_smb5/parameters/call_on
+    chown radio radio /sys/module/qpnp_smb5/parameters/call_on
+    chmod 0666 /sys/module/qpnp_smb5/parameters/video_call_on
+    chown system system /sys/module/qpnp_smb5/parameters/video_call_on
+    chown system system /proc/skin_temp_thrd/fastchg_thd
+    chown system system /proc/skin_temp_thrd/fastchg_lcdoff_thd
+    chown system system /proc/skin_temp_thrd/norchg_thd
+    chown system system /proc/skin_temp_thrd/norchg_lcdoff_thd
+    chown system system /dev/param
+
+    #ifdef VENDOR_EDIT
+#ken.chenxm@SYSTEM, 2019/10/10, add for [OSP-3172] charging optimizated
+    chown system system /sys/class/power_supply/battery/op_disable_charge
+    chmod 660 /sys/class/power_supply/battery/op_disable_charge
+    chown system system /sys/class/power_supply/bms/battery_h
+    chmod 660 /sys/class/power_supply/bms/battery_h
+#brian@BSP, 2021/3/4, add for [IKR-43692] charging optimizated
+    chown system system /sys/class/power_supply/bms/full_available_capacity
+    chmod 660 /sys/class/power_supply/bms/full_available_capacity
+    chown system system /sys/class/power_supply/bms/full_charge_capacity_filtered
+    chmod 660 /sys/class/power_supply/bms/full_charge_capacity_filtered
+    #jay.fa@OPTI, 2020/08/12, add for [OPTI-42] hypnus
+    chown root system /sys/class/thermal/cooling_device0/cur_state
+    chown root system /sys/class/thermal/cooling_device1/cur_state
+    chown root system /sys/class/thermal/cooling_device2/cur_state
+    chown root system /sys/class/kgsl/kgsl-3d0/max_pwrlevel
+    chown root system /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+    chown root system /sys/class/thermal/cooling_device14/cur_state
+    chmod 660 /sys/class/thermal/cooling_device0/cur_state
+    chmod 660 /sys/class/thermal/cooling_device1/cur_state
+    chmod 660 /sys/class/thermal/cooling_device2/cur_state
+    chmod 660 /sys/class/kgsl/kgsl-3d0/max_pwrlevel
+    chmod 660 /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+    chmod 660 /sys/class/thermal/cooling_device14/cur_state
+
+on early-boot
+    # Allow subsystem (modem etc) debugging
+    write /sys/kernel/boot_adsp/boot 1
+    write /sys/kernel/boot_cdsp/boot 1
+    write /sys/kernel/boot_slpi/boot 1
+    write /sys/devices/virtual/cvp/cvp/boot 1
+
+on boot
+    chmod 0444 /sys/devices/platform/msm_hsusb/gadget/usb_state
+    # Create hvdcp_opti directory
+    mkdir /mnt/vendor/persist/hvdcp_opti 0770 root system
+
+on post-fs-data
+    # Create directory used by powermodule
+    mkdir /data/vendor/pwr 0700 root root
+    # Create /data/vendor/tzstorage directory for SFS listener
+    mkdir /data/vendor/tzstorage 0770 system system
+
+    # Create directory for apps access via QTEEConnector
+    mkdir /data/vendor/qtee 0770 system system
+    #if OP_FEATURE_MM_ADSP_MINIDUMP == 1
+# zhangrun@MM, 2020/09/12, implement to collect adsp minidump
+    mkdir /data/vendor/ramdump/adsp 0770 system system
+# endif
+
+    # kimmy.yang@NETWORK, 20201223, add for SM8350 (SoC)
+    mkdir /data/vendor/ramdump/modem 0770 system system
+    # for battery charging off is call_state_change
+# jinguozhi@wt.network,20210207,add for battery charging off is call_state_change
+on property:persist.sys.chgdisabled=1
+   write /sys/class/power_supply/battery/call_mode 1
+on property:persist.sys.chgdisabled=0
+   write /sys/class/power_supply/battery/call_mode 0
+
+on charger
+    mount_all /vendor/etc/charger_fstab.qti --early
+    write /sys/kernel/boot_adsp/boot 1
+    #restart charger after ADSP is out of reset
+    restart charger
+    start qcom-post-boot
+    write /sys/devices/system/cpu/cpufreq/policy0/scaling_governor schedutil
+    write /sys/devices/system/cpu/cpufreq/policy6/scaling_governor schedutil
+    write /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq 1324800
+
+    write /sys/devices/system/cpu/cpu1/online 0
+    write /sys/devices/system/cpu/cpu2/online 0
+    write /sys/devices/system/cpu/cpu3/online 0
+    write /sys/devices/system/cpu/cpu4/online 0
+    write /sys/devices/system/cpu/cpu5/online 0
+    write /sys/devices/system/cpu/cpu6/online 0
+    write /sys/devices/system/cpu/cpu7/online 0
+    write /sys/module/lpm_levels/parameters/sleep_disabled 0
+    stop oemlogkit
+
+    start vendor.power_off_alarm
+    setprop sys.usb.controller 4e00000.dwc3
+    setprop sys.usb.configfs 1
+
+
+# sam.li@SYSTEM,insmod *.ko in recovery mode
+on property:vendor.partition.mounted=1
+    exec u:r:recovery:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules touch
+    exec u:r:recovery:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules aw8697
+
+# sam.li@SYSTEM,Add for Charging in recovery mode
+on property:modem.partition.mounted=1
+   exec u:r:recovery:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules q6_pdr_dlkm q6_notifier_dlkm snd_event_dlkm apr_dlkm adsp_loader_dlkm oplus_chg
+   write /sys/kernel/boot_adsp/boot 1
+   wait /sys/class/power_supply/battery
+
+service kernel-post-boot /vendor/bin/sh /vendor/bin/init.kernel.post_boot.sh
+    class core
+    user root
+    group root system wakelock graphics
+    disabled
+    oneshot
+
+service qcom-sh /vendor/bin/init.qcom.sh
+    class late_start
+    user root
+    group root system radio
+    oneshot
+
+on property:vendor.sys.listeners.registered=true
+    start gatekeeper-1-0
+
+service logd /system/bin/logd
+    socket logd stream 0666 logd logd
+    socket logdr seqpacket 0666 logd logd
+    socket logdw dgram+passcred 0222 logd logd
+    file /proc/kmsg r
+    file /dev/kmsg w
+    disabled
+    user logd
+    group logd system package_info readproc
+    capabilities SYSLOG AUDIT_CONTROL SETGID
+    writepid /dev/cpuset/system-background/tasks
+    seclabel u:r:recovery:s0
+
+service logd-reinit /system/bin/logd --reinit
+    oneshot
+    disabled
+    user logd
+    group logd
+    writepid /dev/cpuset/system-background/tasks
+    seclabel u:r:recovery:s0
+
+#danny.xiao@system, 2020/07/14, added for performing merge operation when updating with OTA wipe package
+service vendor.boot-hal-1-1 /vendor/bin/hw/android.hardware.boot@1.1-service
+     interface android.hardware.boot@1.0::IBootControl default
+     interface android.hardware.boot@1.1::IBootControl default
+     disabled
+     seclabel u:r:recovery:s0
+
+service battery_monitor /system/bin/battery_monitor
+    user system
+    group system
+    disabled
+
+service charger /system/bin/charger
+    class charger
+    user system
+    group system graphics input
+    capabilities SYS_BOOT
+    seclabel u:r:charger:s0
+
+#ifdef VENDOR_EDIT
+#kim@bsp 2019/10/25 add to fix apsd wrong issue when boot with dash connected
+on property:sys.boot_completed=1
+    write /sys/module/smb5_lib/parameters/sys_boot_complete 1
+#@bsp Add OTG switch
+on property:persist.sys.oem.otg_support=true
+    write /sys/class/power_supply/usb/otg_switch 1
+    write /sys/class/oplus_chg/usb/otg_switch 1
+on property:persist.sys.oem.otg_support=false
+    write /sys/class/power_supply/usb/otg_switch 0
+    write /sys/class/oplus_chg/usb/otg_switch 0
+#endif
